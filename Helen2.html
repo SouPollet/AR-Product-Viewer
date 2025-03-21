@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR 3D Objet</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(233, 159, 200);
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <model-viewer 
+        id="3d-model"
+        src="./PLV2-Helene.glb" 
+        ar 
+        auto-rotate 
+        camera-controls 
+        alt="A 3D model">
+    </model-viewer>
+    <button onclick="enterAR()">Enter AR Mode</button>
+
+    <script>
+        function enterAR() {
+            const modelViewer = document.getElementById('3d-model');
+            modelViewer.activateAR();
+        }
+    </script>
+</body>
+</html>
