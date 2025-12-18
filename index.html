@@ -5,131 +5,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AR Product Viewer Collection</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: rgb(46, 137, 235);
-            --bg-color: #f5f5f7;
+            --primary-color: #E60023;
+            /* Pinterest Red-ish or keep blue? Let's stick to a neutral primary or the blue but softer */
+            --bg-color: #ffffff;
             --card-bg: #ffffff;
-            --text-color: #1d1d1f;
-            --secondary-text: #86868b;
+            --text-color: #111111;
+            --secondary-text: #767676;
+            --hover-overlay: rgba(0, 0, 0, 0.05);
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Roboto', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             background-color: var(--bg-color);
             color: var(--text-color);
-            min-height: 100vh;
         }
 
         header {
-            background-color: var(--card-bg);
-            padding: 2rem 1rem;
+            padding: 20px 16px;
             text-align: center;
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
+            margin-bottom: 20px;
             position: sticky;
             top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px);
-            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
         }
 
         h1 {
             margin: 0;
-            font-weight: 700;
-            font-size: 2rem;
-            letter-spacing: -0.02em;
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--text-color);
         }
 
         .subtitle {
-            margin-top: 0.5rem;
+            margin-top: 8px;
             color: var(--secondary-text);
-            font-size: 1rem;
+            font-size: 14px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
+            /* Wider for masonry */
             margin: 0 auto;
-            padding: 0 20px 40px;
+            padding: 0 16px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
+        /* Masonry Layout using Columns */
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 16px;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        @media (max-width: 1200px) {
+            .masonry-grid {
+                column-count: 3;
+            }
         }
 
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-        }
-
-        .card-content {
-            padding: 24px;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .card-title {
-            font-weight: 500;
-            font-size: 1.1rem;
-            margin: 0;
-        }
-
-        .card-icon {
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary-color);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            margin-left: 16px;
-            flex-shrink: 0;
-        }
-
-        .badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background-color: #ff3b30;
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 12px;
-            text-transform: uppercase;
+        @media (max-width: 900px) {
+            .masonry-grid {
+                column-count: 2;
+            }
         }
 
         @media (max-width: 600px) {
-            .grid {
-                grid-template-columns: 1fr;
+            .masonry-grid {
+                column-count: 1;
+                /* Or 2 on mobile if cards are small, but 1 is safer for titles */
             }
+        }
 
-            h1 {
-                font-size: 1.5rem;
-            }
+        .card {
+            break-inside: avoid;
+            margin-bottom: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transform: translateZ(0);
+            /* Fix for column rendering glitches */
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            filter: brightness(0.95);
+        }
+
+        .card-visual {
+            width: 100%;
+            min-height: 200px;
+            background-color: #efefef;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.2);
+            font-size: 2em;
+        }
+
+        /* Gradients for placeholders since we have no images */
+        .g-1 {
+            background: linear-gradient(135deg, #fce38a, #f38181);
+            height: 250px;
+        }
+
+        .g-2 {
+            background: linear-gradient(135deg, #42e695, #3bb2b8);
+            height: 300px;
+        }
+
+        .g-3 {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            height: 200px;
+        }
+
+        .g-4 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: rgba(255, 255, 255, 0.3);
+            height: 280px;
+        }
+
+        .g-5 {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            height: 220px;
+        }
+
+        .g-6 {
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            height: 260px;
+        }
+
+        .g-7 {
+            background: linear-gradient(135deg, #fad0c4, #ffd1ff);
+            height: 240px;
+        }
+
+        .g-8 {
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            height: 290px;
+        }
+
+        .card-content {
+            padding: 8px 4px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.2;
+            color: #111;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: #767676;
+            display: flex;
+            align-items: center;
+            margin-top: 4px;
+        }
+
+        .badge {
+            background-color: #111;
+            color: #fff;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            font-weight: bold;
+            z-index: 10;
         }
     </style>
 </head>
@@ -137,186 +191,186 @@
 <body>
 
     <header>
-        <h1>AR Product Viewer</h1>
-        <div class="subtitle">Explore our collection of 3D AR experiences</div>
+        <h1>Projection produit en réalité augmentée</h1>
+        <div class="subtitle">Visualise chaque objet en 3D dans ton espace</div>
     </header>
 
     <div class="container">
-        <div class="grid">
-            <!-- Latest Added -->
+        <div class="masonry-grid">
+
             <a href="YellowGameboy.html" class="card">
-                <span class="badge">New</span>
+                <span class="badge">Nouveau</span>
+                <div class="card-visual g-1">Gameboy</div>
                 <div class="card-content">
-                    <span class="card-title">Yellow Gameboy</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Yellow Gameboy</div>
                 </div>
             </a>
 
             <a href="DroneSympa.html" class="card">
+                <div class="card-visual g-2">Drone</div>
                 <div class="card-content">
-                    <span class="card-title">Drone Sympa</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Drone Sympa</div>
                 </div>
             </a>
 
             <a href="MarinetteBijou.html" class="card">
+                <div class="card-visual g-4">Bijou</div>
                 <div class="card-content">
-                    <span class="card-title">Marinette Bijou</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Marinette Bijou</div>
                 </div>
             </a>
 
             <a href="N64.html" class="card">
+                <div class="card-visual g-5">N64</div>
                 <div class="card-content">
-                    <span class="card-title">Nintendo 64</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Nintendo 64</div>
                 </div>
             </a>
 
             <a href="Bouate.html" class="card">
+                <div class="card-visual g-3">Boîte</div>
                 <div class="card-content">
-                    <span class="card-title">Bouate</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Bouate</div>
                 </div>
             </a>
 
             <a href="PopMarron.html" class="card">
+                <div class="card-visual g-6">Pop</div>
                 <div class="card-content">
-                    <span class="card-title">Pop Marron</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Pop Marron</div>
                 </div>
             </a>
 
             <a href="PopCylindre.html" class="card">
+                <div class="card-visual g-7">Cylindre</div>
                 <div class="card-content">
-                    <span class="card-title">Pop Cylindre</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Pop Cylindre</div>
                 </div>
             </a>
 
             <a href="FeteEau16.html" class="card">
+                <div class="card-visual g-2">Eau</div>
                 <div class="card-content">
-                    <span class="card-title">Fete Eau 16</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Fete Eau 16</div>
                 </div>
             </a>
 
             <a href="PopIgloo.html" class="card">
+                <div class="card-visual g-8">Igloo</div>
                 <div class="card-content">
-                    <span class="card-title">Pop Igloo</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Pop Igloo</div>
                 </div>
             </a>
 
             <a href="SphereBulle.html" class="card">
+                <div class="card-visual g-1">Bulle</div>
                 <div class="card-content">
-                    <span class="card-title">Sphere Bulle</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Sphere Bulle</div>
                 </div>
             </a>
 
             <a href="PopStoreAntonin.html" class="card">
+                <div class="card-visual g-4">Store</div>
                 <div class="card-content">
-                    <span class="card-title">Pop Store Antonin</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Pop Store Antonin</div>
                 </div>
             </a>
 
             <a href="Volley2.html" class="card">
+                <div class="card-visual g-5">Volley</div>
                 <div class="card-content">
-                    <span class="card-title">Volley 2</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Volley 2</div>
                 </div>
             </a>
 
             <a href="Volley1.html" class="card">
+                <div class="card-visual g-6">Volley</div>
                 <div class="card-content">
-                    <span class="card-title">Volley 1</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Volley 1</div>
                 </div>
             </a>
 
             <a href="PopUpStoreBleu.html" class="card">
+                <div class="card-visual g-2">Bleu</div>
                 <div class="card-content">
-                    <span class="card-title">Pop Up Store Bleu</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Pop Up Store Bleu</div>
                 </div>
             </a>
 
             <a href="Plage.html" class="card">
+                <div class="card-visual g-7">Plage</div>
                 <div class="card-content">
-                    <span class="card-title">Plage</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Plage</div>
                 </div>
             </a>
 
             <a href="Vacances.html" class="card">
+                <div class="card-visual g-3">Vacances</div>
                 <div class="card-content">
-                    <span class="card-title">Vacances</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Vacances</div>
                 </div>
             </a>
 
             <a href="Pistup.html" class="card">
+                <div class="card-visual g-8">Piste</div>
                 <div class="card-content">
-                    <span class="card-title">Pistup</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Pistup</div>
                 </div>
             </a>
 
             <a href="Jaune.html" class="card">
+                <div class="card-visual g-1">Jaune</div>
                 <div class="card-content">
-                    <span class="card-title">Jaune</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Jaune</div>
                 </div>
             </a>
 
             <a href="Vente.html" class="card">
+                <div class="card-visual g-4">Vente</div>
                 <div class="card-content">
-                    <span class="card-title">Vente</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Vente</div>
                 </div>
             </a>
 
             <a href="Karate.html" class="card">
+                <div class="card-visual g-5">Karate</div>
                 <div class="card-content">
-                    <span class="card-title">Karate</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Karate</div>
                 </div>
             </a>
 
             <a href="Helene3.html" class="card">
+                <div class="card-visual g-6">Helene</div>
                 <div class="card-content">
-                    <span class="card-title">Helene 3</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Helene 3</div>
                 </div>
             </a>
 
             <a href="Massage.html" class="card">
+                <div class="card-visual g-2">Massage</div>
                 <div class="card-content">
-                    <span class="card-title">Massage</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Massage</div>
                 </div>
             </a>
 
             <a href="Vivien.html" class="card">
+                <div class="card-visual g-7">Vivien</div>
                 <div class="card-content">
-                    <span class="card-title">Vivien</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Vivien</div>
                 </div>
             </a>
 
             <a href="Helene2.html" class="card">
+                <div class="card-visual g-3">Helene</div>
                 <div class="card-content">
-                    <span class="card-title">Helene 2</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Helene 2</div>
                 </div>
             </a>
 
             <a href="Helene1.html" class="card">
+                <div class="card-visual g-8">Helene</div>
                 <div class="card-content">
-                    <span class="card-title">Helene 1</span>
-                    <div class="card-icon">AR</div>
+                    <div class="card-title">Helene 1</div>
                 </div>
             </a>
 
