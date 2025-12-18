@@ -4,82 +4,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR 3D Objet</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <title>AR Product Viewer Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: rgb(46, 137, 235);
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-color: #1d1d1f;
+            --secondary-text: #86868b;
+        }
+
         body {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: rgb(46, 137, 235);
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
         }
 
-        model-viewer {
-            width: 100%;
-            height: 100%;
+        header {
+            background-color: var(--card-bg);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background-color: rgba(255, 255, 255, 0.8);
         }
 
-        #ar-button {
-            background-image: url(https://modelviewer.dev/shared-assets/icons/ic_view_in_ar_new_googblue_48dp.png);
-            background-repeat: no-repeat;
-            background-size: 20px 20px;
-            background-position: 12px 50%;
-            background-color: rgba(255, 255, 255, 0.25);
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            bottom: 32px;
-            padding: 0px 16px 0px 40px;
-            font-family: Roboto, Regular, Helvetica, sans-serif;
-            font-size: 14px;
-            color: #ffffff;
-            height: 36px;
-            line-height: 36px;
+        h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            margin-top: 0.5rem;
+            color: var(--secondary-text);
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--card-bg);
             border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        #ar-button:hover {
-            background-color: rgba(255, 255, 255, 0.45);
-            transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
         }
 
-        #ar-button:active {
-            background-color: rgba(255, 255, 255, 0.6);
-            transform: translateX(-50%) scale(0.95);
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        #ar-button:focus {
-            outline: none;
+        .card-title {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin: 0;
         }
 
-        #ar-button:focus-visible {
-            outline: 1px solid #4285f4;
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 16px;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: #ff3b30;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <model-viewer id="3d-model" src="./yellow_gameboy.glb" ar auto-rotate camera-controls alt="A 3D model">
-        <button slot="ar-button" id="ar-button">
-            View in your space
-        </button>
-    </model-viewer>
-    <script>
-        function enterAR() {
-            const modelViewer = document.getElementById('3d-model');
-            modelViewer.activateAR();
-        }
-    </script>
+
+    <header>
+        <h1>AR Product Viewer</h1>
+        <div class="subtitle">Explore our collection of 3D AR experiences</div>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            <!-- Latest Added -->
+            <a href="YellowGameboy.html" class="card">
+                <span class="badge">New</span>
+                <div class="card-content">
+                    <span class="card-title">Yellow Gameboy</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="DroneSympa.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Drone Sympa</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="MarinetteBijou.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Marinette Bijou</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="N64.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Nintendo 64</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Bouate.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Bouate</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="PopMarron.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Pop Marron</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="PopCylindre.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Pop Cylindre</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="FeteEau16.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Fete Eau 16</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="PopIgloo.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Pop Igloo</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="SphereBulle.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Sphere Bulle</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="PopStoreAntonin.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Pop Store Antonin</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Volley2.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Volley 2</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Volley1.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Volley 1</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="PopUpStoreBleu.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Pop Up Store Bleu</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Plage.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Plage</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Vacances.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Vacances</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Pistup.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Pistup</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Jaune.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Jaune</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Vente.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Vente</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Karate.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Karate</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Helene3.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Helene 3</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Massage.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Massage</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Vivien.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Vivien</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Helene2.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Helene 2</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+            <a href="Helene1.html" class="card">
+                <div class="card-content">
+                    <span class="card-title">Helene 1</span>
+                    <div class="card-icon">AR</div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
 </body>
 
 </html>
