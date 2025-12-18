@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,13 +13,14 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: rgb(255, 255, 255);
+            background-color: rgb(46, 137, 235);
         }
+
         model-viewer {
             width: 100%;
             height: 100%;
         }
-    
+
         #ar-button {
             background-image: url(https://modelviewer.dev/shared-assets/icons/ic_view_in_ar_new_googblue_48dp.png);
             background-repeat: no-repeat;
@@ -63,24 +65,15 @@
         #ar-button:focus-visible {
             outline: 1px solid #4285f4;
         }
-
     </style>
 </head>
+
 <body>
-    <model-viewer 
-        id="3d-model"
-        src="./MobilierMarmite.glb" 
-        ar 
-        auto-rotate 
-        camera-controls 
-        alt="A 3D model">
-    
+    <model-viewer id="3d-model" src="./yellow_gameboy.glb" ar auto-rotate camera-controls alt="A 3D model">
         <button slot="ar-button" id="ar-button">
             View in your space
         </button>
     </model-viewer>
-    
-
     <script>
         function enterAR() {
             const modelViewer = document.getElementById('3d-model');
@@ -88,4 +81,5 @@
         }
     </script>
 </body>
+
 </html>
