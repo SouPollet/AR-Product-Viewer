@@ -25,17 +25,6 @@ def create_html_summary(folder_path, output_file='summary.html'):
 <html>
 <head>
     <title>Résumé des pages HTML</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; margin: 20px; }}
-        .file-item {{ 
-            border: 1px solid #ddd; 
-            margin: 10px 0; 
-            padding: 10px; 
-            border-radius: 5px;
-        }}
-        .file-name {{ font-weight: bold; color: #0066cc; }}
-        .file-size {{ color: #666; font-size: 0.9em; }}
-    </style>
 </head>
 <body>
     <h1>Résumé des pages HTML dans '{folder_path}'</h1>
@@ -50,11 +39,9 @@ def create_html_summary(folder_path, output_file='summary.html'):
             size_str = f"{size} octets"
             
             html_content += f"""
-        <div class="file-item">
+        <a href="{file.name}" class="file-item">
             <div class="file-name">{file.name}</div>
-            <div class="file-size">Taille: {size_str}</div>
-            <div class="file-path">Chemin: {file.absolute()}</div>
-        </div>
+        </a>
 """
         
         html_content += """
