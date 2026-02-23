@@ -25,12 +25,13 @@ def create_html_summary(folder_path, output_file='summary.html'):
 <html>
 <head>
     <title>Résumé des pages HTML</title>
+    <link rel="stylesheet" href="summary.css">
 </head>
 <body>
     <h1>Résumé des pages HTML dans '{folder_path}'</h1>
     <p>Total: {len(html_files)} fichiers HTML</p>
     
-    <div>
+    <div class="links-grid">
 """
         
         for file in html_files:
@@ -39,9 +40,7 @@ def create_html_summary(folder_path, output_file='summary.html'):
             size_str = f"{size} octets"
             
             html_content += f"""
-        <a href="{file.name}" class="file-item">
-            <div class="file-name">{file.name}</div>
-        </a>
+        <a href="{file.name}" class="file-item">{file.name}</a>
 """
         
         html_content += """
