@@ -66,12 +66,101 @@
             outline: 1px solid #4285f4;
         }
 
+        .hotspot {
+        display: block;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.7);
+        background-color: transparent;
+        box-sizing: border-box;
+        pointer-events: none;
+        }
+
+        /*
+        .hotspot[slot="hotspot-control"] {
+        --min-hotspot-opacity: 0;
+        background-color: red;
+        }
+
+        .hotspot[slot="hotspot-onoff"] {
+        --min-hotspot-opacity: 0;
+        background-color: rgb(56, 109, 183);
+        }
+
+        .hotspot[slot="hotspot-plaque"] {
+        --min-hotspot-opacity: 0;
+        background-color: rgb(64, 116, 74);
+        }
+
+        */
+
+        .annotation {
+        visibility: visible;
+        background-color: #888888;
+        position: absolute;
+        transform: translate(10px, 10px);
+        border-radius: 10px;
+        padding: 10px;
+        }
+
+        .pas-annotation {
+            visibility: hidden;
+        }
+
+        /* This keeps child nodes hidden while the element loads */
+        :not(:defined)>* {
+        display: none;
+        }
     </style>
 </head>
 
 <body>
-    <model-viewer id="3d-model" src="./TrotecSpeedy100.glb" ar autoplay auto-rotate camera-controls alt="A 3D model">
-    
+    <model-viewer id="3d-model" src="./TrotecSpeedy100.glb" ar autoplay  camera-controls alt="A 3D model">
+        
+        <!-- Annotations sur le modèle -->
+        <button class="hotspot" slot="hotspot-ventil" data-position="0.395 1.018 0.102" data-normal="1 1 1">
+            <div class="annotation">Activer ventilation</div>
+        </button>
+        <button class="hotspot" slot="hotspot-pausemachine" data-position="0.41 1.018 0.102" data-normal="-0.73 0.05 0.69">
+            <div class="annotation">Pause machine</div>
+        </button>
+        <button class="hotspot" slot="hotspot-pausetravail" data-position="0.425 1.018 0.102" data-normal="-0.73 0.05 0.69">
+            <div class="annotation">Pause travail</div>
+        </button>
+        <button class="hotspot" slot="hotspot-recommencertravail" data-position="0.395 1.017 0.125" data-normal="-0.73 0.05 0.69">
+            <div class="annotation">Recommencer travail</div>
+        </button>
+        <button class="hotspot" slot="hotspot-activerfaisceau" data-position="0.41 1.017 0.125" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> /!\ Activer le faisceau </div>
+        </button>
+        <button class="hotspot" slot="hotspot-gauche" data-position="0.4 1 0.1" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> Déplacer laser gauche </div>
+        </button>
+        <button class="hotspot" slot="hotspot-droite" data-position="0.4 1 0.1" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> Déplacer laser droite </div>
+        </button>
+        <button class="hotspot" slot="hotspot-loin" data-position="0.4 1 0.1" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> Déplacer bras loin </div>
+        </button>
+        <button class="hotspot" slot="hotspot-proche" data-position="0 .5 0.1" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> Déplacer bras proche </div>
+        </button>
+        <button class="hotspot" slot="hotspot-monter" data-position="0.4 2 0.1" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> Monter le plateau </div>
+        </button>
+        <button class="hotspot" slot="hotspot-descendre" data-position="0.4 0 0.1" data-normal="-0.73 0.05 0.69">
+            <div class="annotation"> Descendre le plateau </div>
+        </button>
+
+        <button class="hotspot" slot="hotspot-onoff" data-position="-0.4 1.02 -0.33" data-normal="-0.73 0.05 0.69">
+            <div class="pas-annotation">Bouton ON/OFF</div>
+        </button>
+        <button class="hotspot" slot="hotspot-plaque" data-position="0 0.99 0.25" data-normal="-0.73 0.05 0.69">
+            <div class="annotation">Couvercle en acrylique</div>
+        </button>
+
+
         <button slot="ar-button" id="ar-button">
             View in your space
         </button>
@@ -83,6 +172,39 @@
             const modelViewer = document.getElementById('3d-model');
             modelViewer.activateAR();
         }
+
+        var lesBoutons = document.querySelectorAll('.hotspot');        
+        console.log(lesBoutons)
+
+
+        lesBoutons.forEach((elt) =>{
+            console.log("addEventListener")
+            console.log(elt)
+            elt.addEventListener("click", function(event){
+                console.log("click")
+                console.log(event.currentTarget)
+                
+                 // Use event.target to get the clicked button
+                const button = event.target;
+                // this a la place de button 
+                console.log(button.classList);
+            
+                // Toggle the show class
+                const classesMadiv = button.childNodes[0].classList;
+                classesMadiv.toggle('annotation');
+                classesMadiv.toggle('pas-annotation');
+            })
+        })
+
+        const monBody = document.querySelector('body');
+        monBody.addEventListener("click",function(event){
+            console.log("click body")
+            console.log("target ")
+            console.log(event.target)
+            console.log("currentTarget ")
+            console.log(event.currentTarget)
+        })
+
     </script>
 </body>
 
