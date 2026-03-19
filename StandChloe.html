@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR 3D Objet</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(108, 133, 176);
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+        }
+    
+        #ar-button {
+            background-image: url(https://modelviewer.dev/shared-assets/icons/ic_view_in_ar_new_googblue_48dp.png);
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+            background-position: 12px 50%;
+            background-color: rgba(255, 255, 255, 0.25);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            bottom: 32px;
+            padding: 0px 16px 0px 40px;
+            font-family: Roboto, Regular, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #ffffff;
+            height: 36px;
+            line-height: 36px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #ar-button:hover {
+            background-color: rgba(255, 255, 255, 0.45);
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+        }
+
+        #ar-button:active {
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        #ar-button:focus {
+            outline: none;
+        }
+
+        #ar-button:focus-visible {
+            outline: 1px solid #4285f4;
+        }
+
+    </style>
+</head>
+<body>
+    <model-viewer 
+        id="3d-model"
+        src="./StandChloe.glb" 
+        ar 
+        auto-rotate 
+        camera-controls 
+        alt="A 3D model">
+    
+        <button slot="ar-button" id="ar-button">
+            View in your space
+        </button>
+    </model-viewer>
+    
+
+    <script>
+        function enterAR() {
+            const modelViewer = document.getElementById('3d-model');
+            modelViewer.activateAR();
+        }
+    </script>
+</body>
+</html>
