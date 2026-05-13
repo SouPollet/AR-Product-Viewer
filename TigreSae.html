@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AR 3D Objet</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <style>
+    <script src="https://ga.jspm.io/npm:es-module-shims@2.6.2/dist/es-module-shims.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.2.0/model-viewer.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer-effects/dist/model-viewer-effects.min.js"></script>
+
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"
+    }
+  }
+</script>
+        <style>
         body {
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: rgb(91, 91, 91);
+            background-color: rgb(51, 51, 51);
         }
+
         model-viewer {
             width: 100%;
             height: 100%;
@@ -63,23 +75,21 @@
         #ar-button:focus-visible {
             outline: 1px solid #4285f4;
         }
-
     </style>
 </head>
+
 <body>
-    <model-viewer 
-        id="3d-model"
-        src="./TigreSae.glb" 
-        ar 
-        auto-rotate 
-        camera-controls 
-        alt="A 3D model">
-    
+    <!--<model-viewer id="3dmodel" src="./GlassCube.glb" autoplay ar auto-rotate camera-controls exposure="1" skybox-image="./Stan.jpg" skybox-height="1.8m" shadow-intensity=".25" shadow-softness="1.321" alt="A 3D model" >-->
+    <model-viewer id="3dmodel" src="./TigreSae.glb" autoplay ar camera-controls exposure="1" skybox-image="./Stan.jpg" skybox-height="10m" shadow-intensity=".25" shadow-softness="1.321"  alt="A 3D model" >
+
+        <effect-composer>
+            <bloom-effect strength="1" radius=".4" threshold=".8"></bloom-effect>
+        </effect-composer>
+
         <button slot="ar-button" id="ar-button">
             View in your space
         </button>
     </model-viewer>
-    
 
     <script>
         function enterAR() {
